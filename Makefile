@@ -70,7 +70,7 @@ TAG              := $(VERSION)_$(OS)_$(ARCH)
 TAG_PROD         := $(TAG)
 TAG_DBG          := $(VERSION)-dbg_$(OS)_$(ARCH)
 
-GO_VERSION       ?= 1.12.7
+GO_VERSION       ?= 1.12.9
 BUILD_IMAGE      ?= appscode/golang-dev:$(GO_VERSION)-stretch
 
 OUTBIN = bin/$(OS)_$(ARCH)/$(BIN)
@@ -311,7 +311,7 @@ $(BUILD_DIRS):
 .PHONY: install
 install:
 	@cd ../installer; \
-	APPSCODE_ENV=dev  STASH_DOCKER_REGISTRY=$(REGISTRY) STASH_IMAGE_TAG=$(TAG) ./deploy/stash.sh
+	APPSCODE_ENV=dev  STASH_IMAGE_TAG=$(TAG) ./deploy/stash.sh --docker-registry=$(REGISTRY) --image-pull-secret=$(REGISTRY_SECRET)
 
 .PHONY: uninstall
 uninstall:
