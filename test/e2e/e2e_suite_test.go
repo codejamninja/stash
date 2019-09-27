@@ -1,7 +1,6 @@
 package e2e_test
 
 import (
-	"path/filepath"
 	"strings"
 	"testing"
 	"time"
@@ -12,7 +11,6 @@ import (
 	. "github.com/onsi/gomega"
 	"k8s.io/client-go/discovery"
 	clientsetscheme "k8s.io/client-go/kubernetes/scheme"
-	"k8s.io/client-go/util/homedir"
 	ka "k8s.io/kube-aggregator/pkg/client/clientset_generated/clientset"
 	"k8s.io/kubernetes/pkg/api/legacyscheme"
 	discovery_util "kmodules.xyz/client-go/discovery"
@@ -62,20 +60,14 @@ var _ = BeforeSuite(func() {
 	Expect(err).NotTo(HaveOccurred())
 
 	kaClient := ka.NewForConfigOrDie(clientConfig)
-	framework.StashProjectRoot = filepath.Join(homedir.HomeDir(), "go", "src", "github.com", "appscode", "stash")
 
 	root = framework.New(ctrlConfig.KubeClient, ctrlConfig.StashClient, kaClient, clientConfig, options.StorageClass)
 	err = root.CreateTestNamespace()
 	Expect(err).NotTo(HaveOccurred())
 	By("Using test namespace " + root.Namespace())
-
-	By("Starting the Stash Operator")
-	root.InstallStashOperator(options.KubeConfig, options.ExtraOptions)
 })
 
 var _ = AfterSuite(func() {
-	By("Deleting Stash Operator")
-	root.UninstallStashOperator()
 	By("Deleting namespace: " + root.Namespace())
 	err := root.DeleteNamespace(root.Namespace())
 	Expect(err).NotTo(HaveOccurred())

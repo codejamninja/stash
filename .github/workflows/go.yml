@@ -68,5 +68,7 @@ jobs:
         REGISTRY_SECRET: regcred
       run: |
         export KUBECONFIG="$(kind get kubeconfig-path)"
+        env > ${GITHUB_WORKSPACE}/hack/config/.env
         make install
+        echo
         make e2e-tests
