@@ -21,11 +21,11 @@ jobs:
 
     - name: Build
       env:
-        REGISTRY: docker.pkg.github.com/stashed/stash
-        DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}
-        USERNAME: stashed
+        REGISTRY: appscodeci
+        DOCKER_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+        USERNAME: 1gtm
       run: |
-        docker login docker.pkg.github.com --username ${USERNAME} --password ${DOCKER_TOKEN}
+        docker login --username ${USERNAME} --password ${DOCKER_TOKEN}
         make push
 
     - name: Create Kubernetes cluster
@@ -37,8 +37,8 @@ jobs:
     - name: Prepare cluster for testing
       id: local-path
       env:
-        DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}
-        USERNAME: stashed
+        DOCKER_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+        USERNAME: 1gtm
         REGISTRY_SECRET: regcred
       run: |
         export KUBECONFIG="$(kind get kubeconfig-path)"
@@ -53,17 +53,18 @@ jobs:
         kubectl wait --for=condition=Ready pods -n local-path-storage --all --timeout=5m
         echo
         echo "create docker-registry secret"
-        kubectl create secret docker-registry ${REGISTRY_SECRET} --namespace=kube-system --docker-server=docker.pkg.github.com --docker-username=${USERNAME} --docker-password=${DOCKER_TOKEN}
+        kubectl create secret docker-registry ${REGISTRY_SECRET} --namespace=kube-system --docker-server=https://index.docker.io/v1/ --docker-username=${USERNAME} --docker-password=${DOCKER_TOKEN}
 
     - name: Check out installer
       run: |
         cd ..
         git clone https://github.com/stashed/installer.git
         cd installer
+        git checkout master
 
     - name: Run e2e tests
       env:
-        REGISTRY: docker.pkg.github.com/stashed/stash
+        REGISTRY: appscodeci
         REGISTRY_SECRET: regcred
       run: |
         export KUBECONFIG="$(kind get kubeconfig-path)"
