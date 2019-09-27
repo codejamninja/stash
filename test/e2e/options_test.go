@@ -9,7 +9,6 @@ import (
 	logs "github.com/appscode/go/log/golog"
 	"k8s.io/client-go/util/homedir"
 	"stash.appscode.dev/stash/pkg/cmds/server"
-	opt "stash.appscode.dev/stash/test/e2e/framework"
 )
 
 type E2EOptions struct {
@@ -33,7 +32,6 @@ var (
 )
 
 func init() {
-	//options.AddGoFlags(flag.CommandLine)
 	flag.StringVar(&options.DockerRegistry, "docker-registry", "", "Set Docker Registry")
 	flag.StringVar(&options.StashImageTag, "image-tag", "", "Set Stash Image Tag")
 	flag.StringVar(&options.KubeConfig, "kubeconfig", options.KubeConfig, "Path to kubeconfig file with authorization information (the master location is set by the master flag).")
@@ -41,9 +39,6 @@ func init() {
 	flag.StringVar(&options.StorageClass, "storageclass", "standard", "Storageclass for PVC")
 	enableLogging()
 	flag.Parse()
-	opt.DockerRegistry = options.DockerRegistry
-	opt.DockerImageTag = options.StashImageTag
-
 }
 
 func enableLogging() {

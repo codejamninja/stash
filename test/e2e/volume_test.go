@@ -12,42 +12,14 @@ import (
 )
 
 var (
-	bpv              *core.PersistentVolume
 	bpvc             *core.PersistentVolumeClaim
 	rpvc             *core.PersistentVolumeClaim
 	pod              core.Pod
-	updateStatusFunc v1beta1.Function
-	backupFunc       v1beta1.Function
-	restoreFunc      v1beta1.Function
-	backupTask       v1beta1.Task
-	restoreTask      v1beta1.Task
 )
 
 var _ = Describe("Volume", func() {
 	BeforeEach(func() {
 		f = root.Invoke()
-
-		By("Creating functions")
-		updateStatusFunc = f.UpdateStatusFunction()
-		backupFunc = f.PvcBackupFunction()
-		restoreFunc = f.PvcRestoreFunction()
-
-		err = f.CreateFunction(updateStatusFunc)
-		Expect(err).NotTo(HaveOccurred())
-		err = f.CreateFunction(backupFunc)
-		Expect(err).NotTo(HaveOccurred())
-		err = f.CreateFunction(restoreFunc)
-		Expect(err).NotTo(HaveOccurred())
-
-		By("Creating Tasks")
-		backupTask = f.BackupTask()
-		restoreTask = f.RestoreTask()
-
-		err = f.CreateTask(backupTask)
-		Expect(err).NotTo(HaveOccurred())
-		err = f.CreateTask(restoreTask)
-		Expect(err).NotTo(HaveOccurred())
-
 	})
 	JustBeforeEach(func() {
 		pod = f.Pod(bpvc.Name)
@@ -63,7 +35,7 @@ var _ = Describe("Volume", func() {
 
 		backupCfg = f.BackupConfiguration(repo.Name, targetref)
 		backupCfg.Spec.Target = f.PvcBackupTarget(bpvc.Name)
-		backupCfg.Spec.Task.Name = backupTask.Name
+		backupCfg.Spec.Task.Name = "pvc-backup"
 
 		restoreSession = f.RestoreSession(repo.Name, targetref, rules)
 		restoreSession.Spec.Target = f.PvcRestoreTarget(bpvc.Name)
@@ -74,22 +46,10 @@ var _ = Describe("Volume", func() {
 				},
 			},
 		}
-		restoreSession.Spec.Task.Name = restoreTask.Name
+		restoreSession.Spec.Task.Name = "pvc-restore"
 
 	})
 	AfterEach(func() {
-		err = f.DeleteFunction(updateStatusFunc.ObjectMeta)
-		Expect(err).NotTo(HaveOccurred())
-		err = f.DeleteFunction(backupFunc.ObjectMeta)
-		Expect(err).NotTo(HaveOccurred())
-		err = f.DeleteFunction(restoreFunc.ObjectMeta)
-		Expect(err).NotTo(HaveOccurred())
-
-		err = f.DeleteTask(backupTask.ObjectMeta)
-		Expect(err).NotTo(HaveOccurred())
-		err = f.DeleteTask(restoreTask.ObjectMeta)
-		Expect(err).NotTo(HaveOccurred())
-
 		err = f.DeleteSecret(cred.ObjectMeta)
 		Expect(err).NotTo(HaveOccurred())
 		err = framework.WaitUntilSecretDeleted(f.KubeClient, cred.ObjectMeta)

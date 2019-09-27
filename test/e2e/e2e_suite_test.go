@@ -1,13 +1,13 @@
 package e2e_test
 
 import (
+	"github.com/onsi/ginkgo/reporters"
+	"kmodules.xyz/client-go/logs"
 	"strings"
 	"testing"
 	"time"
 
-	logs "github.com/appscode/go/log/golog"
 	. "github.com/onsi/ginkgo"
-	"github.com/onsi/ginkgo/reporters"
 	. "github.com/onsi/gomega"
 	"k8s.io/client-go/discovery"
 	clientsetscheme "k8s.io/client-go/kubernetes/scheme"

@@ -265,6 +265,7 @@ unit-tests: $(BUILD_DIRS)
 
 GINKGO_ARGS ?=
 TEST_ARGS   ?=
+KUBE_CRED_DIR?=.minikube
 
 .PHONY: e2e-tests
 e2e-tests: $(BUILD_DIRS)
@@ -276,7 +277,7 @@ e2e-tests: $(BUILD_DIRS)
 	    -w /src                                                 \
 	    --net=host                                              \
 	    -v $(HOME)/.kube:/.kube                                 \
-	    -v $(HOME)/.credentials:$(HOME)/.credentials            \
+	    -v $(HOME)/$(KUBE_CRED_DIR):$(HOME)/$(KUBE_CRED_DIR)    \
 	    -v $$(pwd)/.go/bin/$(OS)_$(ARCH):/go/bin                \
 	    -v $$(pwd)/.go/bin/$(OS)_$(ARCH):/go/bin/$(OS)_$(ARCH)  \
 	    -v $$(pwd)/.go/cache:/.cache                            \
