@@ -32,7 +32,7 @@ jobs:
       id: kind
       uses: engineerd/setup-kind@v0.1.0
       with:
-        config: hack/e2e/cluster.yaml
+        config: hack/kubernetes/kind.yaml
 
     - name: Prepare cluster for testing
       id: local-path
