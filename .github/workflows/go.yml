@@ -66,10 +66,10 @@ jobs:
       env:
         REGISTRY: appscodeci
         REGISTRY_SECRET: regcred
+        TEST_CREDENTIALS: ${{ secrets.TEST_CREDENTIALS }}
       run: |
         export KUBECONFIG="$(kind get kubeconfig-path)"
-        export KUBE_CRED_DIR=".credentials"
-        env > ${GITHUB_WORKSPACE}/hack/config/.env
+        $TEST_CREDENTIALS > ${GITHUB_WORKSPACE}/hack/config/.env
         make install
         echo
         make e2e-tests

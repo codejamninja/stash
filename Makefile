@@ -283,6 +283,7 @@ e2e-tests: $(BUILD_DIRS)
 	    -v $$(pwd)/.go/cache:/.cache                            \
 	    --env HTTP_PROXY=$(HTTP_PROXY)                          \
 	    --env HTTPS_PROXY=$(HTTPS_PROXY)                        \
+	    --env KUBECONFIG=$(KUBECONFIG)                          \
 	    --env-file=$$(pwd)/hack/config/.env                     \
 	    $(BUILD_IMAGE)                                          \
 	    /bin/bash -c "                                          \
