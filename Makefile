@@ -81,7 +81,10 @@ endif
 # Directories that we need created to build/test.
 BUILD_DIRS  := bin/$(OS)_$(ARCH)     \
                .go/bin/$(OS)_$(ARCH) \
-               .go/cache
+               .go/cache             \
+               $(HOME)/.credentials  \
+               $(HOME)/.kube         \
+               $(HOME)/.minikube
 
 DOCKERFILE_PROD  = Dockerfile.in
 DOCKERFILE_DBG   = Dockerfile.dbg
@@ -182,7 +185,7 @@ $(OUTBIN): .go/$(OUTBIN).stamp
 	    "
 	@if [ $(COMPRESS) = yes ] && [ $(OS) != darwin ]; then          \
 		echo "compressing $(OUTBIN)";                               \
-		docker run                                                  \
+		@docker run                                                 \
 		    -i                                                      \
 		    --rm                                                    \
 		    -u $$(id -u):$$(id -g)                                  \
@@ -265,19 +268,19 @@ unit-tests: $(BUILD_DIRS)
 
 GINKGO_ARGS ?=
 TEST_ARGS   ?=
-KUBE_CRED_DIR?=.minikube
 
 .PHONY: e2e-tests
 e2e-tests: $(BUILD_DIRS)
-	docker run                                                  \
+	@docker run                                                 \
 	    -i                                                      \
 	    --rm                                                    \
 	    -u $$(id -u):$$(id -g)                                  \
 	    -v $$(pwd):/src                                         \
 	    -w /src                                                 \
 	    --net=host                                              \
+	    -v $(HOME)/.credentials:/.credentials                   \
 	    -v $(HOME)/.kube:/.kube                                 \
-	    -v $(HOME)/$(KUBE_CRED_DIR):$(HOME)/$(KUBE_CRED_DIR)    \
+	    -v $(HOME)/.minikube:/.minikube                         \
 	    -v $$(pwd)/.go/bin/$(OS)_$(ARCH):/go/bin                \
 	    -v $$(pwd)/.go/bin/$(OS)_$(ARCH):/go/bin/$(OS)_$(ARCH)  \
 	    -v $$(pwd)/.go/cache:/.cache                            \
