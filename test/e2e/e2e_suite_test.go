@@ -1,19 +1,19 @@
 package e2e_test
 
 import (
-	"github.com/onsi/ginkgo/reporters"
-	"kmodules.xyz/client-go/logs"
 	"strings"
 	"testing"
 	"time"
 
 	. "github.com/onsi/ginkgo"
+	"github.com/onsi/ginkgo/reporters"
 	. "github.com/onsi/gomega"
 	"k8s.io/client-go/discovery"
 	clientsetscheme "k8s.io/client-go/kubernetes/scheme"
 	ka "k8s.io/kube-aggregator/pkg/client/clientset_generated/clientset"
 	"k8s.io/kubernetes/pkg/api/legacyscheme"
 	discovery_util "kmodules.xyz/client-go/discovery"
+	"kmodules.xyz/client-go/logs"
 	"kmodules.xyz/client-go/tools/cli"
 	"kmodules.xyz/client-go/tools/clientcmd"
 	"stash.appscode.dev/stash/apis"

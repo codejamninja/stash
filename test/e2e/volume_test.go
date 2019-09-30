@@ -12,9 +12,9 @@ import (
 )
 
 var (
-	bpvc             *core.PersistentVolumeClaim
-	rpvc             *core.PersistentVolumeClaim
-	pod              core.Pod
+	bpvc *core.PersistentVolumeClaim
+	rpvc *core.PersistentVolumeClaim
+	pod  core.Pod
 )
 
 var _ = Describe("Volume", func() {
