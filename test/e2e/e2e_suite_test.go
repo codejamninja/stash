@@ -1,6 +1,7 @@
 package e2e_test
 
 import (
+	"k8s.io/client-go/dynamic"
 	"strings"
 	"testing"
 	"time"
@@ -21,6 +22,10 @@ import (
 	_ "stash.appscode.dev/stash/client/clientset/versioned/scheme"
 	"stash.appscode.dev/stash/pkg/controller"
 	"stash.appscode.dev/stash/test/e2e/framework"
+
+	//	test sources
+	_ "stash.appscode.dev/stash/test/e2e/volumes"
+	_ "stash.appscode.dev/stash/test/e2e/workloads"
 )
 
 const (
@@ -60,8 +65,10 @@ var _ = BeforeSuite(func() {
 	Expect(err).NotTo(HaveOccurred())
 
 	kaClient := ka.NewForConfigOrDie(clientConfig)
+	dmClient:=dynamic.NewForConfigOrDie(clientConfig)
 
-	root = framework.New(ctrlConfig.KubeClient, ctrlConfig.StashClient, kaClient, clientConfig, options.StorageClass)
+	root = framework.New(ctrlConfig.KubeClient, ctrlConfig.StashClient, kaClient, dmClient, clientConfig, options.StorageClass)
+	framework.RootFramework = root
 	err = root.CreateTestNamespace()
 	Expect(err).NotTo(HaveOccurred())
 	By("Using test namespace " + root.Namespace())
