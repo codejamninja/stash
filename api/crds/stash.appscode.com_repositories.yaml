@@ -33,7 +33,7 @@ spec:
     shortNames:
     - repo
     singular: repository
-  scope: Namespaced
+  scope: Cluster
   subresources:
     status: {}
   validation:
